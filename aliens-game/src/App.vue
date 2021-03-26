@@ -11,6 +11,7 @@
 				<input
 					type="radio"
 					:id="option"
+					:key="option"
 					:value="option"
 					v-model="characterInput"
 				/>
@@ -19,7 +20,7 @@
 			<button @click="pickCharacter">Pick your character!</button>
 		</GamestateStart>
 
-		<section v-else>
+		<section v-else-if="uiState === 'characterChosen'">
 			<svg viewBox="0 -180 1628 1180" class="main">
 				<defs>
 					<clipPath id="bottom-clip">
@@ -89,18 +90,24 @@
 				<h3>{{ questions[questionIndex].question }}</h3>
 			</div>
 			<div class="zombietalk">
-				<p v-for="character in characterChoices" :key="character">
+				<p
+					v-for="character in shuffleArray(characterChoices)"
+					:key="character"
+				>
 					<button @click="pickQuestion(character)">
 						{{ questions[questionIndex][character] }}
 					</button>
 				</p>
 			</div>
 		</section>
+
+		<GamestateFinish v-else :ui-state="uiState" />
 	</div>
 </template>
 
 <script>
 import GamestateStart from '@/components/GamestateStart.vue';
+import GamestateFinish from '@/components/GamestateFinish.vue';
 import Artist from '@/components/Artist.vue';
 import Baker from '@/components/Baker.vue';
 import Friend from '@/components/Friend.vue';
@@ -108,10 +115,12 @@ import Mechanic from '@/components/Mechanic.vue';
 import Score from '@/components/Score.vue';
 import Zombie from '@/components/Zombie.vue';
 import { mapState } from 'vuex';
+import shuffle from 'lodash.shuffle';
 
 export default {
 	components: {
 		GamestateStart,
+		GamestateFinish,
 		Friend,
 		Score,
 		Artist,
@@ -136,12 +145,16 @@ export default {
 	},
 	methods: {
 		pickCharacter() {
+			if (!this.characterInput) return;
 			this.$store.commit('pickCharacter', this.characterInput);
 			this.$store.commit('updateUIState', 'characterChosen');
-			console.log(this.character);
 		},
 		pickQuestion(character) {
-            this.$store.commit('pickQuestion',character)
+			this.$store.commit('pickQuestion', character);
+		},
+		shuffleArray(array) {
+			// Fisher-yates shuffle
+			return shuffle(array);
 		},
 	},
 };
@@ -164,6 +177,7 @@ body {
 	background-size: cover !important;
 	background: url('./assets/background.svg') no-repeat center center scroll,
 		#29abe2;
+	user-select: none;
 }
 
 h1,
@@ -192,8 +206,9 @@ svg.main,
 
 .modal {
 	position: absolute;
-	left: calc(50% - 300px);
+	left: 50%;
 	max-width: 550px;
+	transform: translateX(-50%);
 	top: 100px;
 	background: white;
 	padding: 30px 60px 60px;
@@ -262,6 +277,7 @@ text {
 	background: #fff;
 	color: #1e1e1e;
 	border: 1px solid #cfcece;
+	user-select: none;
 }
 
 .text {

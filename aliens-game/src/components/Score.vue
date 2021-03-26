@@ -73,8 +73,8 @@ export default {
 		...mapState(['score']),
 	},
 	watch: {
-		score(newValue, oldValue) {
-			console.log(`${oldValue} -> ${newValue}`);
+		score(newValue) {
+			// console.log(`${oldValue} -> ${newValue}`);
 			gsap.to('#needle', {
 				duration: 0.3,
 				rotation: newValue,
@@ -85,4 +85,3 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
