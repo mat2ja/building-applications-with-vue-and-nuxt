@@ -1,8 +1,9 @@
 <template>
 	<div class="modal">
 		<div>
-			<h2 id="header">You {{ uiState }}!</h2>
-			<div :class="['center', { rotate: uiState === 'lost' }]">
+			<h2 v-if="uiState === 'won'">You won!</h2>
+			<h2 v-else>You lost</h2>
+			<div class="center">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 131 131"
@@ -17,7 +18,7 @@
 					<circle class="cls-2" cx="95" cy="65.8" r="7.5" />
 					<circle class="cls-2" cx="36" cy="65.8" r="7.5" />
 					<path
-						class="cls3"
+						:class="[uiState === 'lost' ? 'frown' : '', 'cls3']"
 						d="M51,97s6,10,23,10S95,97,95,97"
 						transform="translate(-8.5 -5.5)"
 					/>
@@ -40,21 +41,22 @@ export default {
 </script>
 
 <style scoped>
-.rotate {
-	transform: rotate(180deg);
+.frown {
+  transform: rotate(180deg);
+  transform-origin: 50% 50%;
 }
 
 .modal {
 	padding-right: 100px;
 	padding-left: 100px;
-    text-align: center;
+	text-align: center;
 }
 
 .center {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-    margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }
 
 .cls-1 {

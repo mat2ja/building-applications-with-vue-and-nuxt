@@ -46,7 +46,8 @@
 				<Friend />
 				<Score />
 
-				<component :is="character"></component>
+				<component :is="character" class="character-clip"></component>
+				<Zombie class="zombie-clip" />
 
 				<text
 					x="1000"
@@ -106,6 +107,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import shuffle from 'lodash.shuffle';
+import gsap from 'gsap';
+
 import GamestateStart from '@/components/GamestateStart.vue';
 import GamestateFinish from '@/components/GamestateFinish.vue';
 import Artist from '@/components/Artist.vue';
@@ -114,8 +119,6 @@ import Friend from '@/components/Friend.vue';
 import Mechanic from '@/components/Mechanic.vue';
 import Score from '@/components/Score.vue';
 import Zombie from '@/components/Zombie.vue';
-import { mapState } from 'vuex';
-import shuffle from 'lodash.shuffle';
 
 export default {
 	components: {
@@ -155,6 +158,14 @@ export default {
 		shuffleArray(array) {
 			// Fisher-yates shuffle
 			return shuffle(array);
+		},
+	},
+	watch: {
+		score(newValue, oldValue) {
+			console.log(oldValue);
+			gsap.to('.bottom-clip-path, .top-clip-path', {
+				y: -newValue * 6,
+			});
 		},
 	},
 };
